@@ -9,6 +9,10 @@ jobs:
   windows:
     runs-on: windows-2022
 
+    defaults:
+      run:
+        shell: cmd
+
     steps:
     - name: Checkout ArGram
       uses: actions/checkout@v4
@@ -16,34 +20,30 @@ jobs:
         submodules: recursive
         fetch-depth: 1
 
-    - name: Setup MSVC
-      uses: microsoft/setup-msbuild@v2
-
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
-    - name: Install dependencies
-      shell: cmd
-      run: |
-        pip install pywin32
+    - name: Install Python deps
+      run: pip install pywin32
 
-    - name: Cache third-party libs
+    - name: Setup MSVC environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+
+    - name: Cache Libraries
       uses: actions/cache@v4
       with:
-        path: |
-          C:\TBuild\Libraries
-        key: windows-libs-${{ hashFiles('Telegram/build/prepare/prepare.py') }}
+        path: C:\TBuild\Libraries
+        key: win-libs-v2-${{ hashFiles('Telegram/build/prepare/prepare.py') }}
+        restore-keys: win-libs-v2-
 
     - name: Prepare libraries
-      shell: cmd
-      run: |
-        set TDESKTOP_BUILD_DEFINE=ARGRAM_BUILD
-        python Telegram\build\prepare\prepare.py skip-release
+      run: python Telegram\build\prepare\prepare.py skip-release
 
     - name: Configure CMake
-      shell: cmd
       run: |
         cmake -B out -G "Visual Studio 17 2022" -A x64 ^
           -DCMAKE_BUILD_TYPE=Release ^
@@ -52,18 +52,20 @@ jobs:
           Telegram
 
     - name: Build ArGram
-      shell: cmd
-      run: |
-        cmake --build out --config Release --target Telegram -j4
+      run: cmake --build out --config Release --target Telegram -j4
 
     - name: Package
       shell: pwsh
       run: |
-        $app = Get-ChildItem -Recurse -Filter "ArGram.exe" out/ | Select-Object -First 1
-        if ($app) {
-          New-Item -ItemType Directory -Force -Path artifacts
-          Copy-Item $app.FullName artifacts/
+        $exe = Get-ChildItem -Recurse -Filter "ArGram.exe" out/ | Select-Object -First 1
+        if (-not $exe) { $exe = Get-ChildItem -Recurse -Filter "Telegram.exe" out/ | Select-Object -First 1 }
+        if ($exe) {
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          Copy-Item $exe.FullName artifacts/ArGram.exe
           Compress-Archive -Path artifacts/ArGram.exe -DestinationPath ArGram-Windows-1.0.zip
+          Write-Host "Packaged: $($exe.FullName)"
+        } else {
+          Write-Error "ArGram.exe not found!"
         }
 
     - name: Upload artifact
@@ -71,10 +73,10 @@ jobs:
       with:
         name: ArGram-Windows
         path: ArGram-Windows-1.0.zip
-        if-no-files-found: warn
+        if-no-files-found: error
 
     - name: Create Release
-      if: github.event_name == 'push'
+      if: success()
       uses: softprops/action-gh-release@v2
       with:
         tag_name: v1.0-windows
