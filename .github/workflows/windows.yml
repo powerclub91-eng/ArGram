@@ -1,0 +1,96 @@
+name: ArGram Windows Build
+
+on:
+  push:
+    branches: [ argram-release ]
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-2022
+
+    steps:
+    - name: Checkout ArGram
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 1
+
+    - name: Setup MSVC
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      shell: cmd
+      run: |
+        pip install pywin32
+
+    - name: Cache third-party libs
+      uses: actions/cache@v4
+      with:
+        path: |
+          C:\TBuild\Libraries
+        key: windows-libs-${{ hashFiles('Telegram/build/prepare/prepare.py') }}
+
+    - name: Prepare libraries
+      shell: cmd
+      run: |
+        set TDESKTOP_BUILD_DEFINE=ARGRAM_BUILD
+        python Telegram\build\prepare\prepare.py skip-release
+
+    - name: Configure CMake
+      shell: cmd
+      run: |
+        cmake -B out -G "Visual Studio 17 2022" -A x64 ^
+          -DCMAKE_BUILD_TYPE=Release ^
+          -DTG_OWT_BUILD_AUDIO_BACKENDS=OFF ^
+          -DDESKTOP_APP_DISABLE_CRASH_REPORTS=ON ^
+          Telegram
+
+    - name: Build ArGram
+      shell: cmd
+      run: |
+        cmake --build out --config Release --target Telegram -j4
+
+    - name: Package
+      shell: pwsh
+      run: |
+        $app = Get-ChildItem -Recurse -Filter "ArGram.exe" out/ | Select-Object -First 1
+        if ($app) {
+          New-Item -ItemType Directory -Force -Path artifacts
+          Copy-Item $app.FullName artifacts/
+          Compress-Archive -Path artifacts/ArGram.exe -DestinationPath ArGram-Windows-1.0.zip
+        }
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ArGram-Windows
+        path: ArGram-Windows-1.0.zip
+        if-no-files-found: warn
+
+    - name: Create Release
+      if: github.event_name == 'push'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v1.0-windows
+        name: "ArGram 1.0 — Windows"
+        files: ArGram-Windows-1.0.zip
+        body: |
+          ## ArGram 1.0 для Windows 🌌
+
+          ### Встановлення:
+          1. Завантаж `ArGram-Windows-1.0.zip`
+          2. Розпакуй і запусти `ArGram.exe`
+
+          ### Що включено:
+          - Galaxy тема (navy #0D0D1A + violet #7B2FFF + cyan #00D4FF)
+          - Client-Side Premium
+          - Client-Side Stars (999999)
+          - Власна іконка ArGram
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
