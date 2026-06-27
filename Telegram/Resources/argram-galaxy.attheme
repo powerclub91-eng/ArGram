@@ -1,6 +1,3 @@
-// ArGram Galaxy Theme for Telegram (iOS & Android)
-// Colors: Background #0D0D1A · Accent #7B2FFF · Highlight #00D4FF
-
 windowBackgroundWhite=-15921894
 windowBackgroundGray=-15658714
 windowBackgroundWhiteBlackText=-1513217
@@ -40,7 +37,6 @@ windowBackgroundWhiteRedText6=-48060
 windowBackgroundWhiteCheckImage=-1
 windowBackgroundUncheckedToggle=-15066571
 windowBackgroundCheckedToggle=-8704001
-
 actionBarDefault=-15658714
 actionBarDefaultSelector=1434136575
 actionBarDefaultIcon=-1
@@ -59,7 +55,6 @@ actionBarTabActiveText=-1
 actionBarTabUnactiveText=-7829334
 actionBarTabLine=-16722689
 actionBarTabSelector=1434136575
-
 chats_menuBackground=-15921894
 chats_menuItemText=-1513217
 chats_menuItemIcon=-8704001
@@ -109,7 +104,6 @@ chats_archiveText=-1
 chats_unreadCounter=-8704001
 chats_unreadCounterMuted=-15066571
 chats_unreadCounterText=-1
-
 chat_wallpaper=-15921894
 chat_wallpaper_gradient_to=-15658714
 chat_inBubble=-15329744
@@ -295,7 +289,6 @@ chat_outBubbleGradientSelectedColor1=-13821079
 chat_outBubbleGradientSelectedColor2=-12769144
 chat_outBubbleGradientSelectedColor3=-12769144
 chat_outBubbleGradientSelectedColor4=-10739764
-
 profile_creatorIcon=-16722689
 profile_adminIcon=-6728193
 profile_verifiedBackground=-16722689
@@ -305,12 +298,10 @@ profile_actionBackground=-8704001
 profile_actionPressedBackground=-10739764
 profile_title=-1
 profile_status=-16722689
-
 listSelectorSDK21=1434136575
 listSelectorSDK21pager=1434136575
 listSelectorSDK21pagerHead=1434136575
 divider=-14540224
-
 player_actionBar=-15658714
 player_actionBarSelector=1434136575
 player_actionBarTitle=-1
@@ -324,45 +315,36 @@ player_placeholder=-7829334
 player_placeholderBackground=-15066571
 player_button=-1513217
 player_buttonActive=-8704001
-
 contextProgressInner1=-10739764
 contextProgressOuter1=-8704001
 contextProgressInner2=-16734004
 contextProgressOuter2=-16722689
 contextProgressInner3=-10739764
 contextProgressOuter3=-8704001
-
 fastScrollActive=-8704001
 fastScrollInactive=-7829334
 fastScrollText=-1
-
 inappPlayerBackground=-15658714
 inappPlayerPlayPause=-8704001
 inappPlayerTitle=-1513217
 inappPlayerPerformer=-7829334
 inappPlayerClose=-7829334
 inappPlayerProgress=-8704001
-
 returnToCallBackground=-8704001
 returnToCallMutedBackground=-48060
 returnToCallText=-1
-
 sharedMediaAction=-8704001
 sharedMediaAction2=-16722689
-
 checkboxSquareBackground=-8704001
 checkboxSquareCheck=-1
 checkboxSquareDisabled=-15066571
 checkboxSquareUnchecked=-7829334
-
 radioBackground=-15066571
 radioBackgroundChecked=-8704001
-
 switchTrack=-15066571
 switchTrackChecked=-10739764
 switchThumb=-7829334
 switchThumbChecked=-8704001
-
 key_chat_attachCheckBoxCheck=-1
 key_chat_attachCheckBoxBackground=-8704001
 key_chat_attachPhotoBackground=-15066571
@@ -376,7 +358,6 @@ key_chat_attachDocumentIcon=-16722689
 key_chat_attachContactIcon=-16722689
 key_chat_attachLocationIcon=-12259704
 key_chat_attachPollIcon=-6728193
-
 statisticChartLine_blue=-8704001
 statisticChartLine_green=-12259704
 statisticChartLine_red=-48060
